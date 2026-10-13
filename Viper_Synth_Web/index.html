@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
+  <title>VIPER / web synthesizer</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js" defer></script>
+  <script src="synthesizer.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <main class="synth-app" aria-label="VIPER web synthesizer">
+    <section class="instrument instrument--left" data-instrument="fm" aria-label="FM synthesizer">
+      <div class="instrument__top">
+        <h2 class="heading">wave</h2>
+        <div class="wave-options" role="group" aria-label="FM waveform">
+          <button class="wave-option is-selected" type="button" data-wave="triangle">triangle</button>
+          <button class="wave-option" type="button" data-wave="pulse">pulse</button>
+          <button class="wave-option" type="button" data-wave="sine">sine</button>
+          <button class="wave-option" type="button" data-wave="sawtooth">sawtooth</button>
+        </div>
+      </div>
+      <div class="adsr-controls">
+        <label class="adsr-row"><input type="range" min="0" max="1" step="0.01" value="0.17" data-param="attack"><span>attack</span></label>
+        <label class="adsr-row"><input type="range" min="0" max="1" step="0.01" value="0.70" data-param="decay"><span>decay</span></label>
+        <label class="adsr-row"><input type="range" min="0" max="1" step="0.01" value="0.35" data-param="sustain"><span>sustain</span></label>
+        <label class="adsr-row"><input type="range" min="0" max="1" step="0.01" value="0.87" data-param="release"><span>release</span></label>
+      </div>
+      <div class="effects-controls">
+        <label class="effect"><span class="effect__title">freeverb</span><input type="range" class="vertical-range" min="0" max="1" step="0.01" value="0.50" data-param="reverb" aria-label="FM freeverb"><output>0.50</output></label>
+        <label class="effect"><span class="effect__title">ping pong delay</span><input type="range" class="vertical-range" min="0" max="1" step="0.01" value="0.80" data-param="delay" aria-label="FM ping pong delay"><output>0.80</output></label>
+        <label class="effect"><span class="effect__title">chorus</span><input type="range" class="vertical-range" min="0" max="1" step="0.01" value="0.43" data-param="chorus" aria-label="FM chorus"><output>0.43</output></label>
+      </div>
+    </section>
+
+    <section class="center-panel" aria-label="Playback and master controls">
+      <div class="visualizer" aria-label="Live audio waveform">
+        <div class="visualizer__row" id="visualizerTop" aria-hidden="true"></div>
+        <div class="visualizer__row visualizer__row--bottom" id="visualizerBottom" aria-hidden="true"></div>
+      </div>
+      <div class="transport">
+        <span class="transport__name">synth 1</span>
+        <button class="play-button" id="playButton" type="button" aria-label="Play" aria-pressed="false"><span class="play-button__icon"></span></button>
+        <span class="transport__name">synth 2</span>
+      </div>
+      <div class="master-controls">
+        <section class="volume-panel" aria-label="Master volume">
+          <h2 class="heading">volume</h2>
+          <input type="range" id="volume" min="0" max="1" step="0.01" value="0.50" aria-label="Volume">
+        </section>
+        <div class="mix-options" role="group" aria-label="Master waveform">
+          <button class="wave-option" data-mix="triangle" type="button">triangle</button>
+          <button class="wave-option" data-mix="pulse" type="button">pulse</button>
+          <button class="wave-option is-selected" data-mix="sine" type="button">sine</button>
+          <button class="wave-option" data-mix="sawtooth" type="button">sawtooth</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="instrument instrument--right" data-instrument="duo" aria-label="Duo synthesizer">
+      <div class="instrument__top">
+        <h2 class="heading">wave</h2>
+        <div class="wave-options" role="group" aria-label="Duo waveform">
+          <button class="wave-option is-selected" type="button" data-wave="triangle">triangle</button>
+          <button class="wave-option" type="button" data-wave="pulse">pulse</button>
+          <button class="wave-option" type="button" data-wave="sine">sine</button>
+          <button class="wave-option" type="button" data-wave="sawtooth">sawtooth</button>
+        </div>
+      </div>
+      <div class="adsr-controls">
+        <label class="adsr-row"><input type="range" min="0" max="1" step="0.01" value="0.17" data-param="attack"><span>attack</span></label>
+        <label class="adsr-row"><input type="range" min="0" max="1" step="0.01" value="0.70" data-param="decay"><span>decay</span></label>
+        <label class="adsr-row"><input type="range" min="0" max="1" step="0.01" value="0.35" data-param="sustain"><span>sustain</span></label>
+        <label class="adsr-row"><input type="range" min="0" max="1" step="0.01" value="0.87" data-param="release"><span>release</span></label>
+      </div>
+      <div class="effects-controls">
+        <label class="effect"><span class="effect__title">freeverb</span><input type="range" class="vertical-range" min="0" max="1" step="0.01" value="0.50" data-param="reverb" aria-label="Duo freeverb"><output>0.50</output></label>
+        <label class="effect"><span class="effect__title">ping pong delay</span><input type="range" class="vertical-range" min="0" max="1" step="0.01" value="0.80" data-param="delay" aria-label="Duo ping pong delay"><output>0.80</output></label>
+        <label class="effect"><span class="effect__title">chorus</span><input type="range" class="vertical-range" min="0" max="1" step="0.01" value="0.43" data-param="chorus" aria-label="Duo chorus"><output>0.43</output></label>
+      </div>
+    </section>
+  </main>
+  <p id="errorMessage" class="error-message" role="alert" hidden></p>
+</body>
+</html>
