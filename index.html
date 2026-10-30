@@ -4,84 +4,82 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#000000">
-  <title>VIPER / web synthesizer</title>
+  <title>VIPER SYNTH — web synthesizer</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js" defer></script>
-  <script src="synthesizer.js" defer></script>
-  <script src="script.js" defer></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+  <script defer src="javascripts/synthesizer.js"></script>
+  <script defer src="javascripts/script.js"></script>
 </head>
 <body>
-  <main class="synth-app" aria-label="VIPER web synthesizer">
-    <section class="instrument instrument--left" data-instrument="fm" aria-label="FM synthesizer">
-      <div class="instrument__top">
-        <h2 class="heading">wave</h2>
-        <div class="wave-options" role="group" aria-label="FM waveform">
-          <button class="wave-option is-selected" type="button" data-wave="triangle">triangle</button>
-          <button class="wave-option" type="button" data-wave="pulse">pulse</button>
-          <button class="wave-option" type="button" data-wave="sine">sine</button>
-          <button class="wave-option" type="button" data-wave="sawtooth">sawtooth</button>
+  <!-- All controls are real HTML elements: the SVG is NOT used as the interface. -->
+  <div class="viewport" id="viewport">
+    <main class="stage" id="stage" aria-label="VIPER SYNTH">
+      <div class="outer-border" aria-hidden="true"></div>
+<section class="instrument" data-instrument="fm" style="--panel-x:134px" aria-label="FM synth">
+<h2 class="wave-heading">wave</h2>
+<div class="wave-choices" role="group" aria-label="Waveform">
+<button type="button" class="wave-button is-selected" data-wave="triangle">triangle</button>
+<button type="button" class="wave-button " data-wave="pulse">pulse</button>
+<button type="button" class="wave-button " data-wave="sine">sine</button>
+<button type="button" class="wave-button " data-wave="sawtooth">sawtooth</button>
+</div>
+<div class="envelope-controls">
+<label class="env-row"><input type="range" min="0" max="1" step="0.01" value=".17" data-param="attack" aria-label="FM synth attack"><span>attack</span></label>
+<label class="env-row"><input type="range" min="0" max="1" step="0.01" value=".70" data-param="decay" aria-label="FM synth decay"><span>decay</span></label>
+<label class="env-row"><input type="range" min="0" max="1" step="0.01" value=".35" data-param="sustain" aria-label="FM synth sustain"><span>sustain</span></label>
+<label class="env-row"><input type="range" min="0" max="1" step="0.01" value=".87" data-param="release" aria-label="FM synth release"><span>release</span></label>
+</div>
+<div class="effects">
+<label class="effect"><span class="effect-label">freeverb</span><input type="range" class="vertical-range" min="0" max="1" step="0.01" value=".50" data-param="reverb" aria-label="FM synth freeverb"><output>1</output></label>
+<label class="effect"><span class="effect-label">ping pong delay</span><input type="range" class="vertical-range" min="0" max="1" step="0.01" value=".80" data-param="delay" aria-label="FM synth ping pong delay"><output>1</output></label>
+<label class="effect"><span class="effect-label">chorus</span><input type="range" class="vertical-range" min="0" max="1" step="0.01" value=".43" data-param="chorus" aria-label="FM synth chorus"><output>1</output></label>
+</div>
+</section>
+      <section class="center-panel" aria-label="Playback and master controls">
+        <!-- Asset extracted from the supplied SVG; all other elements are HTML/CSS. -->
+        <img class="logo" src="assets/viper-logo.png" alt="VIPER SYNTH">
+        <div class="transport">
+          <span class="synth-label synth-label--one">synth 1</span>
+          <button id="playButton" class="play-button" type="button" aria-label="Play" aria-pressed="false"><span class="play-icon" aria-hidden="true"></span></button>
+          <span class="synth-label synth-label--two">synth 2</span>
         </div>
-      </div>
-      <div class="adsr-controls">
-        <label class="adsr-row"><input type="range" min="0" max="1" step="0.01" value="0.17" data-param="attack"><span>attack</span></label>
-        <label class="adsr-row"><input type="range" min="0" max="1" step="0.01" value="0.70" data-param="decay"><span>decay</span></label>
-        <label class="adsr-row"><input type="range" min="0" max="1" step="0.01" value="0.35" data-param="sustain"><span>sustain</span></label>
-        <label class="adsr-row"><input type="range" min="0" max="1" step="0.01" value="0.87" data-param="release"><span>release</span></label>
-      </div>
-      <div class="effects-controls">
-        <label class="effect"><span class="effect__title">freeverb</span><input type="range" class="vertical-range" min="0" max="1" step="0.01" value="0.50" data-param="reverb" aria-label="FM freeverb"><output>0.50</output></label>
-        <label class="effect"><span class="effect__title">ping pong delay</span><input type="range" class="vertical-range" min="0" max="1" step="0.01" value="0.80" data-param="delay" aria-label="FM ping pong delay"><output>0.80</output></label>
-        <label class="effect"><span class="effect__title">chorus</span><input type="range" class="vertical-range" min="0" max="1" step="0.01" value="0.43" data-param="chorus" aria-label="FM chorus"><output>0.43</output></label>
-      </div>
-    </section>
-
-    <section class="center-panel" aria-label="Playback and master controls">
-      <div class="visualizer" aria-label="Live audio waveform">
-        <div class="visualizer__row" id="visualizerTop" aria-hidden="true"></div>
-        <div class="visualizer__row visualizer__row--bottom" id="visualizerBottom" aria-hidden="true"></div>
-      </div>
-      <div class="transport">
-        <span class="transport__name">synth 1</span>
-        <button class="play-button" id="playButton" type="button" aria-label="Play" aria-pressed="false"><span class="play-button__icon"></span></button>
-        <span class="transport__name">synth 2</span>
-      </div>
-      <div class="master-controls">
+        <div class="visualizer" aria-label="Live audio waveform">
+          <div class="visualizer-row" id="visualizerTop" aria-hidden="true"></div>
+          <div class="visualizer-row visualizer-row--bottom" id="visualizerBottom" aria-hidden="true"></div>
+        </div>
         <section class="volume-panel" aria-label="Master volume">
-          <h2 class="heading">volume</h2>
-          <input type="range" id="volume" min="0" max="1" step="0.01" value="0.50" aria-label="Volume">
+          <h2>volume</h2>
+          <input type="range" id="volume" min="0" max="1" step="0.01" value="0.50" aria-label="Master volume">
         </section>
-        <div class="mix-options" role="group" aria-label="Master waveform">
-          <button class="wave-option" data-mix="triangle" type="button">triangle</button>
-          <button class="wave-option" data-mix="pulse" type="button">pulse</button>
-          <button class="wave-option is-selected" data-mix="sine" type="button">sine</button>
-          <button class="wave-option" data-mix="sawtooth" type="button">sawtooth</button>
+        <div class="mix-options" role="group" aria-label="Master waveform shaping">
+          <button type="button" class="wave-button" data-mix="triangle">triangle</button>
+          <button type="button" class="wave-button" data-mix="pulse">pulse</button>
+          <button type="button" class="wave-button is-selected" data-mix="sine">sine</button>
+          <button type="button" class="wave-button" data-mix="sawtooth">sawtooth</button>
         </div>
-      </div>
-    </section>
-
-    <section class="instrument instrument--right" data-instrument="duo" aria-label="Duo synthesizer">
-      <div class="instrument__top">
-        <h2 class="heading">wave</h2>
-        <div class="wave-options" role="group" aria-label="Duo waveform">
-          <button class="wave-option is-selected" type="button" data-wave="triangle">triangle</button>
-          <button class="wave-option" type="button" data-wave="pulse">pulse</button>
-          <button class="wave-option" type="button" data-wave="sine">sine</button>
-          <button class="wave-option" type="button" data-wave="sawtooth">sawtooth</button>
-        </div>
-      </div>
-      <div class="adsr-controls">
-        <label class="adsr-row"><input type="range" min="0" max="1" step="0.01" value="0.17" data-param="attack"><span>attack</span></label>
-        <label class="adsr-row"><input type="range" min="0" max="1" step="0.01" value="0.70" data-param="decay"><span>decay</span></label>
-        <label class="adsr-row"><input type="range" min="0" max="1" step="0.01" value="0.35" data-param="sustain"><span>sustain</span></label>
-        <label class="adsr-row"><input type="range" min="0" max="1" step="0.01" value="0.87" data-param="release"><span>release</span></label>
-      </div>
-      <div class="effects-controls">
-        <label class="effect"><span class="effect__title">freeverb</span><input type="range" class="vertical-range" min="0" max="1" step="0.01" value="0.50" data-param="reverb" aria-label="Duo freeverb"><output>0.50</output></label>
-        <label class="effect"><span class="effect__title">ping pong delay</span><input type="range" class="vertical-range" min="0" max="1" step="0.01" value="0.80" data-param="delay" aria-label="Duo ping pong delay"><output>0.80</output></label>
-        <label class="effect"><span class="effect__title">chorus</span><input type="range" class="vertical-range" min="0" max="1" step="0.01" value="0.43" data-param="chorus" aria-label="Duo chorus"><output>0.43</output></label>
-      </div>
-    </section>
-  </main>
+      </section>
+<section class="instrument" data-instrument="duo" style="--panel-x:1759px" aria-label="Duo synth">
+<h2 class="wave-heading">wave</h2>
+<div class="wave-choices" role="group" aria-label="Waveform">
+<button type="button" class="wave-button is-selected" data-wave="triangle">triangle</button>
+<button type="button" class="wave-button " data-wave="pulse">pulse</button>
+<button type="button" class="wave-button " data-wave="sine">sine</button>
+<button type="button" class="wave-button " data-wave="sawtooth">sawtooth</button>
+</div>
+<div class="envelope-controls">
+<label class="env-row"><input type="range" min="0" max="1" step="0.01" value=".17" data-param="attack" aria-label="Duo synth attack"><span>attack</span></label>
+<label class="env-row"><input type="range" min="0" max="1" step="0.01" value=".70" data-param="decay" aria-label="Duo synth decay"><span>decay</span></label>
+<label class="env-row"><input type="range" min="0" max="1" step="0.01" value=".35" data-param="sustain" aria-label="Duo synth sustain"><span>sustain</span></label>
+<label class="env-row"><input type="range" min="0" max="1" step="0.01" value=".87" data-param="release" aria-label="Duo synth release"><span>release</span></label>
+</div>
+<div class="effects">
+<label class="effect"><span class="effect-label">freeverb</span><input type="range" class="vertical-range" min="0" max="1" step="0.01" value=".50" data-param="reverb" aria-label="Duo synth freeverb"><output>1</output></label>
+<label class="effect"><span class="effect-label">ping pong delay</span><input type="range" class="vertical-range" min="0" max="1" step="0.01" value=".80" data-param="delay" aria-label="Duo synth ping pong delay"><output>1</output></label>
+<label class="effect"><span class="effect-label">chorus</span><input type="range" class="vertical-range" min="0" max="1" step="0.01" value=".43" data-param="chorus" aria-label="Duo synth chorus"><output>1</output></label>
+</div>
+</section>
+    </main>
+  </div>
   <p id="errorMessage" class="error-message" role="alert" hidden></p>
 </body>
 </html>

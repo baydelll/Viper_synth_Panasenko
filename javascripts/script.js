@@ -1,5 +1,16 @@
 "use strict";
 
+// Scale the real HTML interface to the 2560 × 1440 SVG artboard.
+const viewport = document.getElementById("viewport");
+const stage = document.getElementById("stage");
+function fitStage() {
+  const scale = Math.min(window.innerWidth / 2560, window.innerHeight / 1440);
+  stage.style.setProperty("--scale", String(scale));
+  viewport.style.height = `${1440 * scale}px`;
+}
+window.addEventListener("resize", fitStage);
+fitStage();
+
 const settings = {
   fm: { wave: "triangle", attack: .17, decay: .70, sustain: .35, release: .87, reverb: .50, delay: .80, chorus: .43 },
   duo: { wave: "triangle", attack: .17, decay: .70, sustain: .35, release: .87, reverb: .50, delay: .80, chorus: .43 },
@@ -69,6 +80,11 @@ document.querySelectorAll("[data-instrument]").forEach(panel => {
   });
 });
 
+// Set effect readouts from the controls, not from the SVG placeholder values.
+document.querySelectorAll(".effect").forEach(effect => {
+  const slider = effect.querySelector("input");
+  effect.querySelector("output").textContent = Number(slider.value).toFixed(2);
+});
 const volumeSlider = document.getElementById("volume");
 volumeSlider.addEventListener("input", () => {
   settings.volume = Number(volumeSlider.value);

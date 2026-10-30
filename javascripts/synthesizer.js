@@ -70,7 +70,7 @@ function createChannel(kind) {
         voice1: { oscillator: { type: waveType(values.wave) }, envelope: envelopeOptions(values) }
       });
 
-  const input = new Tone.Gain(kind === "fm" ? 0.36 : 0.52);
+  const input = new Tone.Gain(kind === "fm" ? 0.65 : 0.52);
   const chorus = new Tone.Chorus({ frequency: 1.2, delayTime: 3.5, depth: 0.55, wet: 0 }).start();
   const delay = new Tone.PingPongDelay({ delayTime: "8n.", feedback: 0.28, wet: 0 });
   const reverb = new Tone.Freeverb({ roomSize: 0.72, dampening: 2800, wet: 0 });
