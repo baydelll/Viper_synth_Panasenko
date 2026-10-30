@@ -41,6 +41,28 @@ function syncPlayButton() {
   playButton.setAttribute("aria-label", playing ? "Pause" : "Play");
 }
 
+// Mobile Safari can suspend WebAudio after a tab switch or an interruption.
+// Request context activation on the earliest real user gesture.
+playButton.addEventListener("pointerdown", () => {
+  if (typeof Tone !== "undefined" && !playing) {
+    try {
+      const ctx = Tone.getContext();
+      if (ctx.rawContext?.state === "suspended") {
+        ctx.rawContext.resume().catch(console.warn);
+      }
+    } catch (error) { console.warn(error); }
+  }
+}, { passive:true });
+
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && playing && typeof Tone !== "undefined") {
+    const ctx = Tone.getContext();
+    if (ctx.rawContext?.state === "suspended") {
+      showError("Звук приостановлен телефоном. Нажмите Pause, затем Play.");
+    }
+  }
+});
+
 playButton.addEventListener("click", async () => {
   if (busy) return;
   busy = true;

@@ -1,5 +1,6 @@
 "use strict";
 
+const isMobileAudio = /iPad|iPhone|iPod|Android/i.test(navigator.userAgent);
 const BPM = 154;
 const beat = 60 / BPM;
 const STEPS_PER_BAR = 16;
@@ -53,7 +54,7 @@ function createChannel(kind) {
   const values = settings[kind];
   const synth = kind === "fm"
     ? new Tone.PolySynth(Tone.FMSynth, {
-        maxPolyphony: 12,
+        maxPolyphony: isMobileAudio ? 6 : 12,
         oscillator: { type: waveType(values.wave) },
         modulation: { type: "sine" },
         harmonicity: 2,
@@ -62,7 +63,7 @@ function createChannel(kind) {
         modulationEnvelope: { attack: 0.008, decay: 0.16, sustain: 0.4, release: 0.25 }
       })
     : new Tone.PolySynth(Tone.DuoSynth, {
-        maxPolyphony: 8,
+        maxPolyphony: isMobileAudio ? 4 : 8,
         vibratoAmount: 0.08,
         vibratoRate: 2.1,
         harmonicity: 1.004,
@@ -160,7 +161,7 @@ async function initializeAudio() {
   if (typeof Tone === "undefined") {
     throw new Error("Tone.js не загрузилась. Проверьте подключение к интернету и CDN.");
   }
-  await Tone.start(); // Browser requires an actual user gesture.
+  await unlockMobileAudio();
   Tone.Transport.bpm.value = BPM;
   const master = new Tone.Gain(settings.volume * 0.9);
   const shaper = new Tone.WaveShaper(1024);
@@ -177,6 +178,19 @@ async function initializeAudio() {
   playing = true;
 }
 
+async function unlockMobileAudio() {
+  if (typeof Tone === "undefined") throw new Error("Tone.js не загрузилась (нет доступа к CDN).");
+  // Must be initiated from the actual Play touch/click, not on page load.
+  const context = Tone.getContext();
+  await Tone.start();
+  if (context.rawContext && context.rawContext.state === "suspended") {
+    await context.rawContext.resume();
+  }
+  if (context.rawContext && context.rawContext.state !== "running") {
+    throw new Error("Аудио заблокировано браузером. Нажмите Play ещё раз.");
+  }
+}
+
 async function pauseAudio() {
   if (!audio || !playing) return;
   Tone.Transport.pause();
@@ -187,7 +201,7 @@ async function pauseAudio() {
 
 async function resumeAudio() {
   if (!audio) return initializeAudio();
-  await Tone.start();
+  await unlockMobileAudio();
   if (!playing) {
     Tone.Transport.start();
     playing = true;
