@@ -1,14 +1,22 @@
 "use strict";
 
-// Scale the real HTML interface to the 2560 × 1440 SVG artboard.
+// Desktop: scale original 2560 × 1440 SVG composition.
+// Tablet / phone: CSS grid layout keeps controls full-sized and touch-friendly.
 const viewport = document.getElementById("viewport");
 const stage = document.getElementById("stage");
+const responsiveQuery = window.matchMedia("(max-width: 1100px)");
 function fitStage() {
+  if (responsiveQuery.matches) {
+    stage.style.removeProperty("--scale");
+    viewport.style.height = "auto";
+    return;
+  }
   const scale = Math.min(window.innerWidth / 2560, window.innerHeight / 1440);
   stage.style.setProperty("--scale", String(scale));
   viewport.style.height = `${1440 * scale}px`;
 }
 window.addEventListener("resize", fitStage);
+responsiveQuery.addEventListener?.("change", fitStage);
 fitStage();
 
 const settings = {

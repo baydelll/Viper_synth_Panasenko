@@ -51,3 +51,94 @@ input[type=range].vertical-range::-moz-range-thumb{width:21px;height:21px}
 .mix-options .wave-button{font-size:27px;padding:12px 9px}
 .error-message{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#171717;border:1px solid #f66;color:#fff;padding:12px 20px;max-width:90vw;font:16px/1.5 monospace;z-index:10}
 .error-message[hidden]{display:none}
+
+
+/* ============================================================
+   RESPONSIVE LAYOUT — the 2560px desktop composition is retained.
+   Tablet and phone use native, independently interactive controls.
+   ============================================================ */
+@media (max-width:1100px) {
+  html,body { min-width:320px; }
+  .viewport { height:auto !important; min-height:100dvh; overflow:visible; }
+  .stage {
+    position:relative; inset:auto; transform:none !important;
+    width:100%; height:auto; min-height:100dvh;
+    padding:28px clamp(16px,3vw,38px) 44px;
+    display:grid; column-gap:20px; row-gap:24px;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    grid-template-areas:
+      "logo logo"
+      "transport transport"
+      "visual visual"
+      "volume volume"
+      "mix mix"
+      "fm duo";
+    align-content:start;
+  }
+  .outer-border { inset:12px; width:auto; height:auto; border:1px solid var(--border); }
+  .center-panel { display:contents; pointer-events:auto; }
+  .center-panel > * { position:relative; inset:auto; left:auto; top:auto; right:auto; bottom:auto; transform:none; }
+  .logo { grid-area:logo; width:min(100%,620px); height:auto; max-height:210px; margin:0 auto; object-fit:contain; }
+  .transport { grid-area:transport; height:auto; display:grid; grid-template-columns:1fr 60px 1fr; gap:12px; align-items:center; justify-items:center; pointer-events:auto; }
+  .synth-label { position:static; font-size:clamp(21px,4.2vw,42px); }
+  .synth-label--one { grid-column:1; grid-row:1; }
+  .synth-label--two { grid-column:3; grid-row:1; }
+  .play-button { position:relative; left:auto;top:auto;grid-column:2;grid-row:1; width:52px;height:54px; display:grid;place-items:center; }
+  .visualizer { grid-area:visual; width:100%; height:112px; gap:15px; }
+  .volume-panel { grid-area:volume; width:100%;height:auto;min-height:135px;padding:23px clamp(16px,5vw,48px) 26px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px; }
+  .volume-panel h2 { margin:0;font-size:clamp(29px,4.6vw,45px); }
+  .volume-panel input { position:static;width:min(100%,610px); }
+  .mix-options { grid-area:mix; width:100%;height:auto;min-height:76px;padding:12px;flex-wrap:wrap;gap:4px; }
+  .mix-options .wave-button { font-size:clamp(14px,2.3vw,24px);padding:12px 10px; }
+  .instrument { position:relative; left:auto;top:auto;width:100%;height:auto;min-width:0;padding:25px clamp(14px,2.2vw,25px) 31px;display:flex;flex-direction:column;gap:29px; }
+  .instrument[data-instrument="fm"] { grid-area:fm; }
+  .instrument[data-instrument="duo"] { grid-area:duo; }
+  .wave-heading { position:static;width:auto;font-size:36px; }
+  .wave-choices { position:static;height:auto;min-width:0;display:flex;flex-wrap:wrap;justify-content:center;gap:3px; }
+  .wave-button {font-size:clamp(13px,1.85vw,19px);padding:12px 7px;min-height:44px;line-height:1.25;}
+  .envelope-controls {position:static;width:100%;gap:26px;display:flex;flex-direction:column;}
+  .env-row { width:100%;height:auto;min-height:44px;gap:12px;font-size:clamp(14px,1.8vw,19px);display:flex;align-items:center;justify-content:space-between; }
+  .env-row input { width:auto; flex:1 1 auto;min-width:0; }
+  .env-row span { width:78px;flex:none; }
+  .effects {position:static;width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:8px;}
+  .effect {height:260px;min-width:0;}
+  .effect-label {position:static;display:block;transform:none;white-space:normal;overflow-wrap:anywhere;text-align:center;font-size:clamp(12px,1.6vw,16px);min-height:45px;}
+  input[type=range].vertical-range {top:52px;height:155px;}
+  .effect output {top:auto;bottom:0;font-size:17px;}
+  input[type=range] { touch-action:pan-x; }
+  input[type=range].vertical-range { touch-action:none; }
+  .error-message { width:max-content; }
+}
+@media (max-width:650px) {
+  .stage { grid-template-columns:minmax(0,1fr);grid-template-areas:
+     "logo" "transport" "visual" "volume" "mix" "fm" "duo";
+     padding:24px 16px 35px;gap:18px; }
+  .outer-border {inset:7px;}
+  .logo { max-height:135px;width:min(100%,430px); }
+  .transport {grid-template-columns:1fr 48px 1fr;gap:5px;}
+  .synth-label {font-size:clamp(19px,5.2vw,32px);}
+  .play-button {width:48px;height:48px;}
+  .visualizer {height:86px;gap:7px;}
+  .volume-panel {padding:19px 20px 22px;min-height:118px;gap:20px;}
+  .mix-options {padding:10px 6px;gap:2px;}
+  .mix-options .wave-button {font-size:clamp(12px,3vw,17px);padding:10px 6px;}
+  .instrument {padding:24px 18px 25px;gap:25px;}
+  .wave-heading {font-size:34px;}
+  .wave-choices {gap:2px;}
+  .wave-button {font-size:clamp(12px,3vw,17px);padding:10px 5px;}
+  .env-row {font-size:clamp(13px,3.7vw,17px);}
+  .env-row span {width:75px;}
+  .effects {margin-top:4px;}
+  .effect {height:245px;}
+  .effect-label {font-size:clamp(11px,3.1vw,15px);}
+  input[type=range].vertical-range {height:145px;}
+}
+@media (max-width:360px) {
+  .stage {padding-inline:12px;}
+  .instrument {padding-inline:11px;}
+  .wave-button,.mix-options .wave-button {font-size:12px;padding-inline:4px;}
+  .env-row span {width:70px;}
+}
+@media (prefers-reduced-motion:reduce) {
+  .wave-bar {transition:none;}
+}
